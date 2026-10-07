@@ -3,7 +3,9 @@ import { authenticatedApi as adminApi } from "../api";
 adminApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && window.location.pathname !== "/admin/login") {
+    if (error.response?.status === 401
+      && !error.config?.preservePageOnUnauthorized
+      && window.location.pathname !== "/admin/login") {
       localStorage.removeItem("adminToken");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -32,6 +34,15 @@ export const adminApiService = {
   quoteRequest: (id) => adminApi.get(`/admin/demandes/${id}`),
   updateQuoteRequestStatus: (id, statut) => adminApi.patch(`/admin/demandes/${id}/statut`, null, { params: { statut } }),
   users: () => adminApi.get("/admin/users"),
+
+  createUser: (data) =>
+  adminApi.post("/admin/users", data),
+
+  updateUser: (id, data) =>
+  adminApi.put(`/admin/users/${id}`, data),
+  deleteUser: (id) => adminApi.delete(`/admin/users/${id}`),
+  userRentals: (userId) => adminApi.get(`/admin/users/${userId}/rentals`, { preservePageOnUnauthorized: true }),
+  createUserRental: (userId, data) => adminApi.post(`/admin/users/${userId}/rentals`, data, { preservePageOnUnauthorized: true }),
   settings: () => adminApi.get("/admin/settings"),
   saveSetting: (data) => adminApi.post("/admin/settings", data),
 };

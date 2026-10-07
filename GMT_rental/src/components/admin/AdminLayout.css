@@ -15,3 +15,453 @@ body.light-mode .admin-shell .admin-content .admin-muted{color:var(--adm-muted)!
 .admin-badge-warning{background:#3b2e16;color:#f6d98b}
 .admin-badge-info{background:#172e4a;color:#a9d2ff}
 .admin-badge-neutral{background:#27364e;color:#cad5e5}
+/* =========================
+   UTILISATEURS
+   ========================= */
+
+.admin-users-page {
+  display: grid;
+  gap: 28px;
+}
+
+.admin-users-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--adm-panel);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  padding: 0 14px;
+}
+
+.admin-users-search span {
+  color: var(--adm-muted);
+  font-size: 20px;
+}
+
+.admin-users-search input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--adm-text);
+  padding: 13px 0;
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-users-search input::placeholder {
+  color: var(--adm-muted);
+}
+
+.admin-users-section {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-users-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.admin-users-section-head > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-users-section-head h2 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--adm-text);
+}
+
+.admin-users-section-head span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 7px;
+  border-radius: 20px;
+  background: #27364e;
+  color: var(--adm-muted);
+  font-size: 11px;
+}
+
+.admin-primary-button {
+  border: 1px solid var(--adm-accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--adm-accent);
+  color: #121927;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.admin-primary-button:hover {
+  opacity: 0.9;
+}
+
+.admin-primary-button:active {
+  transform: translateY(1px);
+}
+
+.user-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.user-status.active {
+  background: #17382e;
+  color: #aef1d0;
+}
+
+.user-status.inactive {
+  background: #361c28;
+  color: #ffc2c2;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-actions button {
+  border: 1px solid var(--adm-border);
+  border-radius: 7px;
+  padding: 7px 9px;
+  background: #1a2740;
+  color: var(--adm-text);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.user-actions button:hover {
+  border-color: var(--adm-accent);
+  color: #fff;
+}
+
+.user-actions .user-delete-button {
+  border-color: #8c4248;
+  color: #ffc2c2;
+}
+
+.user-actions .user-delete-button:hover:not(:disabled) {
+  border-color: #d97880;
+  background: #361c28;
+  color: #fff;
+}
+
+.user-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 850px) {
+  .admin-users-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-primary-button {
+    width: 100%;
+  }
+
+  .admin-users-search {
+    width: 100%;
+  }
+
+  .user-actions {
+    flex-wrap: wrap;
+  }
+}
+/* =========================
+   USER MODAL
+   ========================= */
+
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.user-modal {
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--adm-panel);
+  border: 1px solid var(--adm-border);
+  border-radius: 15px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+}
+
+.user-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px;
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.user-modal-header h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: var(--adm-text);
+}
+
+.user-modal-header p {
+  margin: 0;
+  color: var(--adm-muted);
+  font-size: 12px;
+}
+
+.user-modal-close {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--adm-muted);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.user-modal-close:hover {
+  color: #fff;
+  border-color: var(--adm-accent);
+}
+
+.user-modal form {
+  padding: 22px;
+}
+
+.user-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.user-form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.user-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--adm-border);
+}
+
+.rental-history-overlay {
+  z-index: 110;
+}
+
+.rental-history-modal {
+  width: min(1100px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  background: var(--adm-panel);
+  border: 1px solid var(--adm-border);
+  border-radius: 14px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .45);
+}
+
+.rental-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.rental-history-header h2 {
+  margin: 0;
+  color: var(--adm-text);
+  font-size: 18px;
+}
+
+.rental-history-content {
+  padding: 22px;
+}
+
+.rental-history-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.rental-history-error button {
+  flex: 0 0 auto;
+  border: 1px solid #c26c73;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #4a2631;
+  color: #ffe1e3;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rental-history-error button:hover {
+  background: #61303b;
+}
+
+.rental-history-user {
+  display: grid;
+  gap: 7px;
+  padding-bottom: 20px;
+}
+
+.rental-history-user strong {
+  color: var(--adm-text);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.rental-history-user span,
+.rental-history-total > span {
+  color: var(--adm-muted);
+  font-size: 13px;
+}
+
+.rental-history-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--adm-border);
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.rental-history-total > span {
+  text-transform: uppercase;
+}
+
+.rental-history-total strong {
+  color: #4e91ff;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.rental-history-table-wrap {
+  overflow-x: auto;
+  margin: 18px 0 24px;
+}
+
+.rental-history-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.rental-history-table th,
+.rental-history-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.rental-history-table th {
+  color: var(--adm-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.rental-history-table td {
+  color: #dce4f1;
+}
+
+.rental-history-table td:last-child,
+.rental-history-table th:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.rental-car-icon {
+  display: inline-block;
+  margin-right: 10px;
+  color: #4e91ff;
+}
+
+.rental-history-form h3 {
+  margin: 0 0 14px;
+  color: var(--adm-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.rental-history-form-row {
+  display: grid;
+  gap: 12px;
+  align-items: end;
+}
+
+.rental-history-form-row-main {
+  grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(150px, 1fr));
+}
+
+.rental-history-form-row-bottom {
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, 1fr) minmax(180px, 2fr);
+  margin-top: 12px;
+}
+
+.rental-history-form .admin-field input,
+.rental-history-form .admin-field select {
+  min-height: 48px;
+}
+
+.rental-history-form-row-bottom > button {
+  min-height: 48px;
+  background: #397ff0;
+  border-color: #397ff0;
+  color: white;
+}
+
+@media (max-width: 700px) {
+  .rental-history-content { padding: 16px; }
+  .rental-history-error { align-items: flex-start; flex-direction: column; }
+  .rental-history-form-row-main,
+  .rental-history-form-row-bottom { grid-template-columns: 1fr; }
+  .rental-history-total strong { font-size: 19px; }
+}
+
+@media (max-width: 600px) {
+  .user-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-form-grid .full {
+    grid-column: auto;
+  }
+
+  .user-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .user-modal-footer button {
+    width: 100%;
+  }
+}
