@@ -1,0 +1,303 @@
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 24px 56px;
+
+  background-color: rgba(8, 15, 30, 0.95);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* LOGO */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  border-radius: 90%;
+}
+
+.logo span {
+  font-size: 30px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1px;
+}
+
+/* PARTIE DROITE */
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+}
+
+/* MENU */
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+}
+
+nav a {
+  position: relative;
+
+  text-decoration: none;
+  color: #aeb8c9;
+
+  font-size: 16px;
+  font-weight: 500;
+
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: white;
+}
+
+/* LIEN ACTIF */
+
+nav a.active {
+  color: white;
+}
+
+/* petit point bleu sous le lien actif */
+
+nav a.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -13px;
+
+  width: 5px;
+  height: 5px;
+
+  background-color: #0d6efd;
+  border-radius: 50%;
+
+  transform: translateX(-50%);
+}
+
+/* BOUTON DEVIS */
+
+.quote-button {
+  text-decoration: none;
+
+  background-color: #0d6efd;
+  color: white;
+
+  padding: 16px 30px;
+
+  border-radius: 30px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  transition: all 0.3s ease;
+}
+
+.quote-button:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e7edf8;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.theme-toggle:hover { background: rgba(61, 130, 246, .2); border-color: #3d82f6; }
+/* =========================
+   BOUTON MENU MOBILE
+   ========================= */
+
+.menu-button {
+  display: none;
+
+  border: none;
+  background-color: rgba(40, 40, 55, 0.9);
+  color: white;
+
+  width: 56px;
+  height: 56px;
+
+  border-radius: 50%;
+
+  font-size: 27px;
+  cursor: pointer;
+}
+
+
+/* =========================
+   MENU MOBILE
+   ========================= */
+
+.mobile-menu {
+  display: none;
+}
+
+
+/* =========================
+   TABLETTE / MOBILE
+   ========================= */
+
+@media (max-width: 768px) {
+
+  header {
+    position: sticky;
+    top: 0;
+
+    padding: 22px 28px;
+
+    background-color: rgba(8, 15, 30, 0.95);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Logo */
+
+  .logo img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .logo span {
+    font-size: 27px;
+  }
+
+  /* On cache le menu desktop */
+
+  .header-right {
+    display: none;
+  }
+
+  .theme-toggle {
+    margin-left: auto;
+    margin-right: 12px;
+  }
+
+  /* On affiche le bouton hamburger */
+
+  .menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* MENU OUVERT */
+
+  .mobile-menu {
+    display: block;
+
+    position: absolute;
+
+    top: calc(100% + 12px);
+    left: 28px;
+    right: 28px;
+
+    padding: 16px;
+
+    background: rgba(20, 27, 43, 0.97);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 24px;
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+    backdrop-filter: blur(15px);
+  }
+
+  /* Liens */
+
+  .mobile-menu nav {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+  }
+
+  .mobile-menu nav a {
+    display: block;
+
+    padding: 17px 20px;
+
+    color: #aeb8c9;
+
+    text-decoration: none;
+
+    font-size: 17px;
+    font-weight: 500;
+
+    border-radius: 18px;
+  }
+
+  .mobile-menu nav a:hover,
+  .mobile-menu nav a.active {
+    color: white;
+
+    background-color: rgba(50, 100, 180, 0.25);
+  }
+
+  /* Bouton devis */
+
+  .mobile-quote-button {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 15px;
+
+    width: 100%;
+
+    padding: 17px;
+
+    border-radius: 30px;
+
+    background-color: #0d6efd;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 16px;
+    font-weight: 600;
+  }
+}

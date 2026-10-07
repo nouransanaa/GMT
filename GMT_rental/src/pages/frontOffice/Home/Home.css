@@ -1,0 +1,204 @@
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  position: relative;
+
+  width: 100%;
+  height: 620px;
+
+  background-image: url("../../../assets/images/hero/hero.png");
+  background-size: cover;
+  background-position: center;
+
+  overflow: visible;
+}
+
+.home-theme-toggle {
+  position: absolute;
+  z-index: 4;
+  top: 24px;
+  right: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(8, 15, 30, 0.78);
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: background .2s ease, transform .2s ease;
+}
+
+.home-theme-toggle:hover { transform: translateY(-2px); background: #3d82f6; }
+
+
+/* Overlay sombre à gauche */
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(3, 10, 25, 0.95) 0%,
+    rgba(3, 15, 35, 0.85) 30%,
+    rgba(5, 20, 45, 0.55) 55%,
+    rgba(5, 15, 30, 0.15) 100%
+  );
+}
+
+
+/* =========================
+   CONTENU CENTRAL
+========================= */
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  padding: 55px 48px 0;
+
+  max-width: 760px;
+}
+
+
+/* TITRE */
+
+.hero-content h1 {
+  margin: 0 0 32px;
+
+  color: white;
+
+  font-size: 82px;
+  font-weight: 800;
+
+  line-height: 0.95;
+
+  letter-spacing: -4px;
+}
+
+.hero-content h1 span {
+  background: linear-gradient(
+    90deg,
+    #e7f1ff,
+    #3d82f6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-clip: text;
+}
+
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.hero-description {
+  max-width: 700px;
+
+  margin: 0 0 35px;
+
+  color: #b5c1d4;
+
+  font-size: 20px;
+
+  line-height: 1.8;
+}
+
+
+/* =========================
+   BOUTONS
+========================= */
+
+.hero-buttons {
+  display: flex;
+
+  gap: 16px;
+}
+
+
+.hero-button-primary,
+.hero-button-secondary {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  height: 62px;
+
+  padding: 0 32px;
+
+  border-radius: 30px;
+
+  text-decoration: none;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+
+/* Bouton bleu */
+
+.hero-button-primary {
+  background: #3d82f6;
+
+  color: white;
+}
+
+.hero-button-primary:hover {
+  background: #1769e8;
+}
+
+
+/* Bouton transparent */
+
+.hero-button-secondary {
+  border: 1px solid #4b586d;
+
+  background: rgba(10, 18, 35, 0.35);
+
+  color: white;
+}
+
+.hero-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+  .hero {
+    height: 650px;
+  }
+
+  .hero-content {
+    padding: 50px 30px 0;
+  }
+
+  .hero-content h1 {
+    font-size: 60px;
+  }
+
+  .hero-description {
+    font-size: 17px;
+  }
+
+  .hero-buttons {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,76 @@
+.quote-page {
+  min-height: calc(100vh - 76px);
+  padding: 0 24px 50px;
+  background: #080c16;
+  color: #f5f7fb;
+}
+
+.quote-container {
+  width: min(840px, 100%);
+  margin: 0 auto;
+}
+
+.quote-return { display: inline-flex; align-items: center; gap: 12px; margin: 18px 0 38px; padding: 0; border: 0; background: transparent; color: #aebbd0; font: inherit; font-size: 16px; cursor: pointer; }
+.quote-return:hover { color: #f5f7fb; }
+.quote-return span { font-size: 22px; line-height: 1; }
+.quote-intro { margin-bottom: 38px; text-align: left; }
+.quote-intro h1 { margin: 0; color: #f5f7fb; font-size: clamp(48px, 6vw, 60px); font-weight: 850; letter-spacing: -2px; line-height: 1; }
+.quote-intro p { margin: 20px 0 0; color: #aebbd0; font-size: 18px; line-height: 1.5; }
+.quote-progress { padding-top: 0; margin-bottom: 40px; }
+.quote-progress-heading { display: flex; justify-content: space-between; margin-bottom: 10px; color: #aebbd0; font-size: 14px; font-weight: 600; }
+.quote-progress-percent { color: #3981f6; }
+.quote-progress-track { height: 10px; overflow: hidden; border-radius: 99px; background: #ffbf00; }
+.quote-progress-track span { display: block; height: 100%; border-radius: inherit; background: #3981f6; transition: width .25s ease; }
+
+.quote-form {
+  padding: 38px 40px 32px;
+  border: 1px solid #252d3b;
+  border-radius: 38px;
+  background: #0f1422;
+}
+.form-section { display: grid; gap: 24px; }
+.form-section h2 { margin: 0; color: #f5f7fb; font-size: 21px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 24px; }
+.form-group { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.form-group label { color: #f0f2f7; font-size: 16px; font-weight: 650; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; box-sizing: border-box; padding: 16px 19px; border: 1px solid #272f3e;
+  border-radius: 28px; outline: none; background: #0f1422; color: #f5f7fb;
+  font-family: inherit; font-size: 16px; transition: border-color .2s ease, box-shadow .2s ease;
+}
+.form-group textarea { min-height: 105px; border-radius: 24px; resize: vertical; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #3981f6; box-shadow: 0 0 0 3px #3981f626; }
+.form-group input::placeholder, .form-group textarea::placeholder { color: #9aa9bf; }
+.form-group select option { background: #080c16; color: white; }
+.quote-actions { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 12px; }
+.quote-next, .quote-back { min-height: 60px; padding: 0 34px; border: 0; border-radius: 99px; font: inherit; font-weight: 700; cursor: pointer; }
+.quote-next { background: #3981f6; color: white; }
+.quote-next:hover { background: #2670e8; }
+.quote-next:disabled { opacity: .65; cursor: wait; }
+.quote-back { padding-inline: 22px; background: transparent; color: #aebbd0; }
+.quote-back:hover { color: white; }
+.quote-error, .vehicle-error { padding: 14px 16px; border: 1px solid #ef444466; border-radius: 14px; background: #ef44441a; color: #fca5a5; }
+.quote-step-dots { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+.quote-step-dots span { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: #ffbf00; color: #172033; font-weight: 700; }
+.quote-step-dots span.complete { background: #3981f6; color: white; }
+.selected-vehicle-banner { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding: 14px; border: 1px solid #252d3b; border-radius: 22px; background: #0f1422; }
+.selected-vehicle-image { width: 90px; height: 64px; overflow: hidden; border-radius: 12px; background: #080c16; }
+.selected-vehicle-image img { width: 100%; height: 100%; object-fit: cover; }
+.selected-vehicle-info { display: grid; flex: 1; gap: 3px; }
+.selected-vehicle-info span, .selected-vehicle-info small { color: #aebbd0; }
+.selected-vehicle-banner button { padding: 10px 18px; border: 1px solid #334155; border-radius: 99px; background: #111927; color: white; cursor: pointer; }
+.vehicle-error { margin: -12px 0 0; }
+
+@media (max-width: 650px) {
+  .quote-page { padding: 0 15px 36px; }
+  .quote-return { margin: 20px 0 28px; }
+  .quote-intro { margin-bottom: 30px; }
+  .quote-intro h1 { font-size: clamp(44px, 12vw, 56px); }
+  .quote-intro p { font-size: 16px; }
+  .quote-progress { margin-bottom: 24px; }
+  .quote-form { padding: 26px 20px; border-radius: 28px; }
+  .form-grid { grid-template-columns: 1fr; gap: 20px; }
+  .form-section { gap: 20px; }
+  .quote-actions { gap: 8px; }
+  .quote-next, .quote-back { min-height: 54px; padding-inline: 20px; }
+}

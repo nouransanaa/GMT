@@ -1,0 +1,325 @@
+/* =========================
+   CARTE
+========================= */
+
+.car-card {
+  width: 100%;
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #27354d;
+  border-radius: 28px;
+
+  background: #0d1423;
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+
+.car-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #3d82f6;
+}
+
+
+/* =========================
+   IMAGE
+========================= */
+
+.car-image {
+  position: relative;
+
+  width: 100%;
+  height: 205px;
+
+  overflow: hidden;
+
+  background: #172131;
+}
+
+
+.car-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition: transform 0.4s ease;
+}
+
+
+.car-card:hover .car-image img {
+  transform: scale(1.04);
+}
+
+
+/* =========================
+   BADGE CATÉGORIE
+========================= */
+
+.car-category {
+  position: absolute;
+
+  top: 20px;
+  left: 20px;
+
+  padding: 7px 14px;
+
+  border-radius: 20px;
+
+  background: #172537;
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   DISPONIBLE
+========================= */
+
+.car-status {
+  position: absolute;
+
+  top: 20px;
+  right: 20px;
+
+  padding: 7px 14px;
+
+  border-radius: 20px;
+
+  background: #12b77a;
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   CONTENU
+========================= */
+
+.car-content {
+  padding: 25px;
+}
+
+
+.car-brand {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #3d82f6;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+
+.car-content h3 {
+  margin: 0 0 25px;
+
+  color: #f5f7fb;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+
+/* =========================
+   SPECS
+========================= */
+
+.car-specs {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr;
+
+  gap: 8px;
+
+  color: #aebbd0;
+
+  font-size: 13px;
+}
+
+
+.car-specs span {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+.spec-icon {
+  color: #3d82f6;
+
+  font-size: 16px;
+}
+
+
+/* =========================
+   SEPARATEUR
+========================= */
+
+.car-separator {
+  width: 100%;
+  height: 1px;
+
+  margin: 25px 0;
+
+  background: #273247;
+}
+
+
+/* =========================
+   PRIX
+========================= */
+
+.price-label {
+  margin: 0 0 5px;
+
+  color: #9eabc0;
+
+  font-size: 13px;
+}
+
+
+.car-bottom {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+
+.car-price {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 5px;
+}
+
+
+.car-price strong {
+  color: #f5f7fb;
+
+  font-size: 27px;
+  font-weight: 800;
+}
+
+
+.car-price span {
+  color: #9eabc0;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   BOUTONS
+========================= */
+
+.car-buttons {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+}
+
+
+.details-button,
+.quote-button {
+  width: 100%;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border-radius: 28px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+
+/* Voir le véhicule */
+
+.details-button {
+  border: 1px solid #364256;
+
+  background: #111927;
+
+  color: #f5f7fb;
+}
+
+.details-button:hover {
+  background: #1a2435;
+}
+
+
+/* Devis */
+
+.car-buttons .quote-button {
+  border: none;
+
+  background: #3d82f6;
+
+  color: white;
+}
+
+.car-buttons .quote-button:hover {
+  background: #1769e8;
+
+  transform: translateY(-2px);
+}
+
+.car-buttons .quote-button:hover {
+  background: #1769e8;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   PETITS ÉCRANS
+========================= */
+
+@media (max-width: 650px) {
+
+  .car-image {
+    height: 220px;
+  }
+
+  .car-content {
+    padding: 22px;
+  }
+
+}

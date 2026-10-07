@@ -1,0 +1,307 @@
+.gmt-footer {
+  background: #050a18;
+
+  color: #f8fafc;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  padding: 70px 45px 25px;
+}
+
+.footer-container {
+  max-width: 1310px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    1.4fr
+    1fr
+    1.2fr
+    1fr;
+
+  gap: 60px;
+}
+
+
+/* =========================
+   BRAND
+========================= */
+
+.footer-logo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: #f8fafc;
+
+  text-decoration: none;
+
+  font-family: "Syne", sans-serif;
+
+  font-size: 32px;
+
+  font-weight: 800;
+}
+
+.footer-logo-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #3985f5;
+}
+
+.footer-brand p {
+  max-width: 300px;
+
+  margin: 28px 0;
+
+  color: #91a0b8;
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   SOCIALS
+========================= */
+/* =========================
+   SOCIAL LINKS
+========================= */
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  width: 100%;
+  margin-top: 24px;
+
+  position: static !important;
+}
+
+/* Chaque bouton */
+.footer-socials a {
+  width: fit-content;
+  min-width: max-content;
+  height: 44px;
+
+  flex: 0 0 auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  position: static;
+
+  padding: 0 14px;
+  margin: 0;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.03);
+
+  color: #94a3b8;
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  white-space: nowrap;
+  overflow: visible;
+
+  transition: all 0.25s ease;
+}
+
+.footer-socials a:hover {
+  background: rgba(0, 102, 255, 0.15);
+  border-color: rgba(0, 102, 255, 0.5);
+  color: #ffffff;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   COLUMNS
+========================= */
+
+.footer-column {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.footer-column h3 {
+  margin: 0 0 10px;
+
+  font-family: "Syne", sans-serif;
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.footer-column > a {
+  color: #91a0b8;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.footer-column > a:hover {
+  color: #f8fafc;
+}
+
+
+/* =========================
+   CONTACT
+========================= */
+
+.footer-contact-item {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+  color: #91a0b8;
+
+  text-decoration: none;
+
+  line-height: 1.5;
+}
+
+.footer-contact-item svg {
+  flex-shrink: 0;
+
+  color: #3985f5;
+}
+
+a.footer-contact-item:hover {
+  color: #f8fafc;
+}
+
+
+/* =========================
+   HORAIRES
+========================= */
+
+.footer-hours-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 25px;
+
+  color: #91a0b8;
+}
+
+
+/* =========================
+   BOTTOM
+========================= */
+
+.footer-bottom {
+  max-width: 1310px;
+
+  margin: 55px auto 0;
+
+  padding-top: 28px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.footer-bottom p {
+  margin: 0;
+
+  color: #91a0b8;
+}
+
+.footer-legal-links {
+  display: flex;
+
+  gap: 30px;
+}
+
+.footer-legal-links a {
+  color: #91a0b8;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.footer-legal-links a:hover {
+  color: #f8fafc;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 50px;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .gmt-footer {
+    padding: 55px 25px 25px;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;
+
+    gap: 40px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .footer-legal-links {
+    flex-wrap: wrap;
+
+    gap: 18px;
+  }
+
+}

@@ -1,0 +1,140 @@
+body.light-mode {
+  background: #f4f7fc;
+  color: #152033;
+}
+
+body.light-mode header {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom-color: #dce3ed;
+}
+
+body.light-mode .logo span,
+body.light-mode nav a.active,
+body.light-mode nav a:hover { color: #152033; }
+body.light-mode nav a { color: #536176; }
+body.light-mode .mobile-menu { background: rgba(255, 255, 255, .98); border-color: #dce3ed; }
+body.light-mode .mobile-menu nav a { color: #536176; }
+body.light-mode .mobile-menu nav a:hover,
+body.light-mode .mobile-menu nav a.active { color: #152033; background: #eaf1fb; }
+
+body.light-mode .hero-overlay {
+  background: linear-gradient(90deg, rgba(5, 15, 35, .76), rgba(5, 15, 35, .48) 48%, rgba(5, 15, 35, .14));
+}
+body.light-mode .theme-toggle { background: #eef3fa; border-color: #d6dfeb; color: #152033; }
+
+body.light-mode .vehicle-selector {
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 14px 38px rgba(25, 45, 80, .12);
+}
+body.light-mode .selector-title { color: #536176; }
+body.light-mode .vehicle-selector select { color: #152033; }
+
+body.light-mode .vehicles-section { background: #f4f7fc; }
+body.light-mode .vehicles-title h2,
+body.light-mode .car-content h3,
+body.light-mode .car-price strong { color: #152033; }
+body.light-mode .vehicles-title p,
+body.light-mode .price-label,
+body.light-mode .car-specs,
+body.light-mode .car-price span { color: #637189; }
+body.light-mode .car-card { background: #fff; box-shadow: 0 12px 34px rgba(25, 45, 80, .1); }
+body.light-mode .car-separator { background: #e3e8f0; }
+body.light-mode .details-button { background: #f1f4f9; color: #26344a; }
+
+body.light-mode .advantages-section { background: #edf2f9; color: #152033; }
+body.light-mode .advantages-header h2,
+body.light-mode .advantage-card h3 { color: #152033; }
+body.light-mode .advantages-header p,
+body.light-mode .advantage-card p { color: #637189; }
+body.light-mode .advantage-card { background: #fff; box-shadow: 0 12px 34px rgba(25, 45, 80, .07); }
+body.light-mode .advantages-reassurance,
+body.light-mode .advantages-proof { color: #536176; }
+
+body.light-mode footer { background: #e9eef6; color: #26344a; }
+
+/* Le même thème clair s'applique aux pages internes. */
+body.light-mode .catalog-page,
+body.light-mode .about-page,
+body.light-mode .faq-page,
+body.light-mode .contact-page,
+body.light-mode .vehicle-detail-page,
+body.light-mode .quote-page,
+body.light-mode .quote-confirmation {
+  background: #f4f7fc;
+  color: #152033;
+}
+
+body.light-mode main :is(h1, h2, h3, label, p, dt) { color: #26344a; }
+body.light-mode .hero-content :is(h1, p),
+body.light-mode .cta-section :is(h2, p, span),
+body.light-mode .about-cta :is(h2, p),
+body.light-mode .about-primary-button,
+body.light-mode .catalog-card-buttons a,
+body.light-mode .faq-cta-buttons a { color: #fff; }
+
+body.light-mode .catalog-card,
+body.light-mode .value-card,
+body.light-mode .faq-item,
+body.light-mode .faq-cta,
+body.light-mode .contact-form,
+body.light-mode .contact-info-card,
+body.light-mode .quote-form,
+body.light-mode .confirmation-summary,
+body.light-mode .technical-box,
+body.light-mode .description-box,
+body.light-mode .price-box,
+body.light-mode .benefit {
+  border-color: #dce3ed;
+  background-color: #fff;
+  color: #26344a;
+  box-shadow: 0 12px 34px rgba(25, 45, 80, .07);
+}
+
+body.light-mode .catalog-intro h1,
+body.light-mode .catalog-card-content h2,
+body.light-mode .about-hero-content h1,
+body.light-mode .faq-hero h1,
+body.light-mode .contact-hero h1,
+body.light-mode .vehicle-info h1,
+body.light-mode .quote-intro h1,
+body.light-mode .confirmation-summary h2,
+body.light-mode .confirmation-summary dd { color: #152033; }
+
+body.light-mode .catalog-intro p,
+body.light-mode .catalog-card-content p,
+body.light-mode .about-hero-content p,
+body.light-mode .about-section-heading p,
+body.light-mode .why-intro,
+body.light-mode .why-list p,
+body.light-mode .faq-hero p,
+body.light-mode .faq-answer p,
+body.light-mode .contact-hero p,
+body.light-mode .technical-row,
+body.light-mode .description-box p,
+body.light-mode .quote-intro p,
+body.light-mode .confirmation-summary dt,
+body.light-mode .confirmation-message { color: #637189; }
+
+body.light-mode .catalog-filters,
+body.light-mode .catalog-currency,
+body.light-mode .search-box,
+body.light-mode .advanced-filters select,
+body.light-mode .faq-search-wrapper,
+body.light-mode .quote-form input,
+body.light-mode .quote-form select,
+body.light-mode .quote-form textarea,
+body.light-mode .contact-form input,
+body.light-mode .contact-form select,
+body.light-mode .contact-form textarea {
+  border-color: #d6dfeb;
+  background: #f7f9fc;
+  color: #152033;
+}
+
+body.light-mode .quote-step-dots span:not(.complete) { color: #152033; }
+body.light-mode .confirmation-secondary { color: #26344a; border-color: #cbd5e1; background: #fff; }
+
+@media (max-width: 768px) {
+  .theme-toggle { min-height: 42px; padding-inline: 12px; }
+  .theme-toggle span { display: none; }
+}
