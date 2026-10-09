@@ -2,31 +2,45 @@ package com.gmt.rental.service;
 
 import com.gmt.rental.dto.QuoteRequestDTO;
 import com.gmt.rental.entity.QuoteRequest;
+import com.gmt.rental.entity.User;
 import com.gmt.rental.entity.Vehicle;
 import com.gmt.rental.repository.QuoteRequestRepository;
+import com.gmt.rental.repository.UserRepository;
 import com.gmt.rental.repository.VehicleRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class QuoteRequestService {
 
     private final QuoteRequestRepository quoteRequestRepository;
     private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public QuoteRequestService(
             QuoteRequestRepository quoteRequestRepository,
-            VehicleRepository vehicleRepository) {
+            VehicleRepository vehicleRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
 
         this.quoteRequestRepository = quoteRequestRepository;
         this.vehicleRepository = vehicleRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public QuoteRequest createQuote(QuoteRequestDTO dto) {
 
         if (dto == null || dto.getVehiculeId() == null) {
@@ -35,7 +49,7 @@ public class QuoteRequestService {
         if (isBlank(dto.getNom()) || isBlank(dto.getPrenom()) || isBlank(dto.getEmail()) || isBlank(dto.getTelephone())) {
             throw new IllegalArgumentException("Le nom, le prénom, l’email et le téléphone sont obligatoires.");
         }
-        if (!dto.getEmail().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+        if (!dto.getEmail().trim().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
             throw new IllegalArgumentException("L’adresse email est invalide.");
         }
         if (isBlank(dto.getLieuPriseEnCharge()) || isBlank(dto.getLieuRestitution())) {
@@ -77,8 +91,9 @@ public class QuoteRequestService {
 
         quoteRequest.setNom(dto.getNom());
         quoteRequest.setPrenom(dto.getPrenom());
-        quoteRequest.setEmail(dto.getEmail());
+        quoteRequest.setEmail(dto.getEmail().trim().toLowerCase(Locale.ROOT));
         quoteRequest.setTelephone(dto.getTelephone());
+        quoteRequest.setUser(findOrCreateUser(dto));
 
         quoteRequest.setVehicule(vehicle);
 
@@ -99,6 +114,31 @@ public class QuoteRequestService {
 
         // Sauvegarder dans PostgreSQL
         return quoteRequestRepository.save(quoteRequest);
+    }
+
+    private User findOrCreateUser(QuoteRequestDTO dto) {
+        String email = dto.getEmail().trim().toLowerCase(Locale.ROOT);
+        Optional<User> existingUser = userRepository.findByEmailIgnoreCase(email);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            String role = user.getRole() == null ? "" : user.getRole().toUpperCase(Locale.ROOT);
+            if (role.equals("ADMIN") || role.equals("ROLE_ADMIN")) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Cette adresse e-mail est réservée à un compte administrateur.");
+            }
+            return user;
+        }
+
+        User user = new User();
+        user.setNom(dto.getNom().trim());
+        user.setPrenom(dto.getPrenom().trim());
+        user.setEmail(email);
+        user.setTelephone(dto.getTelephone().trim());
+        user.setRole("USER");
+        user.setActif(true);
+        user.setEmailVerified(false);
+        user.setMotDePasse(passwordEncoder.encode(UUID.randomUUID().toString()));
+        return userRepository.save(user);
     }
 
     private boolean isBlank(String value) {

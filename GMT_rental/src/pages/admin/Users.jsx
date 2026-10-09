@@ -28,6 +28,8 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [resendingUserId, setResendingUserId] = useState(null);
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false);
@@ -50,22 +52,16 @@ export default function AdminUsers() {
   }, []);
 
   useEffect(() => {
-    let active = true;
-    adminApiService.users()
-      .then(({ data }) => {
-        if (!active) return;
-        setUsers(data || []);
-        setError("");
-      })
-      .catch((err) => {
-        console.error(err);
-        if (active) setError(getRequestErrorMessage(err, "Impossible de charger les utilisateurs."));
-      });
+    loadUsers();
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") loadUsers();
+    };
+    document.addEventListener("visibilitychange", refreshWhenVisible);
 
     return () => {
-      active = false;
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
-  }, []);
+  }, [loadUsers]);
 
   // =========================
   // OUVRIR MODAL AJOUT
@@ -73,6 +69,7 @@ export default function AdminUsers() {
 
   const openCreateModal = (role) => {
     setError("");
+    setSuccessMessage("");
     setEditingUser(null);
     setModalRole(role);
     setModalOpen(true);
@@ -84,6 +81,7 @@ export default function AdminUsers() {
 
   const openEditModal = (user) => {
     setError("");
+    setSuccessMessage("");
     setEditingUser(user);
     setModalRole(user.role || "USER");
     setModalOpen(true);
@@ -110,6 +108,7 @@ export default function AdminUsers() {
     try {
       setSaving(true);
       setError("");
+      setSuccessMessage("");
 
       if (editingUser) {
         // MODIFICATION
@@ -117,9 +116,11 @@ export default function AdminUsers() {
           editingUser.id,
           data
         );
+        setSuccessMessage("Compte utilisateur mis à jour avec succès.");
       } else {
         // AJOUT
         await adminApiService.createUser(data);
+        setSuccessMessage(`Compte créé avec succès. Un code de vérification OTP à 6 chiffres a été envoyé à ${data.email}.`);
       }
 
       // Fermer le modal
@@ -134,6 +135,21 @@ export default function AdminUsers() {
       setError(getRequestErrorMessage(err, "Impossible d'enregistrer cet utilisateur."));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleResendVerification = async (user) => {
+    try {
+      setResendingUserId(user.id);
+      setError("");
+      setSuccessMessage("");
+      await adminApiService.resendUserVerification(user.id);
+      setSuccessMessage(`Un code de vérification OTP a été renvoyé à ${user.email}.`);
+    } catch (err) {
+      console.error(err);
+      setError(getRequestErrorMessage(err, "Impossible de renvoyer le code de vérification."));
+    } finally {
+      setResendingUserId(null);
     }
   };
 
@@ -219,6 +235,12 @@ export default function AdminUsers() {
         </p>
       )}
 
+      {successMessage && (
+        <p className="admin-success">
+          {successMessage}
+        </p>
+      )}
+
       {/* =========================
           SEARCH
           ========================= */}
@@ -295,37 +317,51 @@ export default function AdminUsers() {
                   </td>
 
                   <td>
-
-                    <span
-                      className={
-                        user.actif === false
-                          ? "user-status inactive"
-                          : "user-status active"
-                      }
-                    >
-                      {user.actif === false
-                        ? "Inactif"
-                        : "Actif"}
-                    </span>
-
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
+                      <span
+                        className={
+                          user.actif === false
+                            ? "user-status inactive"
+                            : "user-status active"
+                        }
+                      >
+                        {user.actif === false ? "Inactif" : "Actif"}
+                      </span>
+                      <span
+                        className={
+                          user.emailVerified
+                            ? "user-status active"
+                            : "user-status warning"
+                        }
+                      >
+                        {user.emailVerified ? "Email vérifié" : "Non vérifié"}
+                      </span>
+                    </div>
                   </td>
 
                   <td>
-
                     <div className="user-actions">
-
                       <button type="button" onClick={() => openHistory(user)}>
                         Historique
                       </button>
 
                       <button
                         type="button"
-                        onClick={() =>
-                          openEditModal(user)
-                        }
+                        onClick={() => openEditModal(user)}
                       >
                         Modifier
                       </button>
+
+                      {!user.emailVerified && (
+                        <button
+                          type="button"
+                          onClick={() => handleResendVerification(user)}
+                          disabled={resendingUserId === user.id}
+                          title="Renvoyer le code de vérification"
+                        >
+                          {resendingUserId === user.id ? "Envoi…" : "Renvoyer code"}
+                        </button>
+                      )}
 
                       <button
                         type="button"
@@ -335,9 +371,7 @@ export default function AdminUsers() {
                       >
                         {deletingUserId === user.id ? "Suppression…" : "Supprimer"}
                       </button>
-
                     </div>
-
                   </td>
 
                 </tr>
@@ -381,15 +415,11 @@ export default function AdminUsers() {
             </span>
           </div>
 
-          <button
-            type="button"
-            className="admin-primary-button"
-            onClick={() => openCreateModal("USER")}
-          >
-            + Ajouter un utilisateur
-          </button>
-
         </div>
+
+        <p className="admin-muted">
+          Les comptes utilisateurs sont créés automatiquement lors d’une demande de devis.
+        </p>
 
         <div className="admin-card admin-table-wrap">
 
@@ -426,37 +456,51 @@ export default function AdminUsers() {
                   </td>
 
                   <td>
-
-                    <span
-                      className={
-                        user.actif === false
-                          ? "user-status inactive"
-                          : "user-status active"
-                      }
-                    >
-                      {user.actif === false
-                        ? "Inactif"
-                        : "Actif"}
-                    </span>
-
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
+                      <span
+                        className={
+                          user.actif === false
+                            ? "user-status inactive"
+                            : "user-status active"
+                        }
+                      >
+                        {user.actif === false ? "Inactif" : "Actif"}
+                      </span>
+                      <span
+                        className={
+                          user.emailVerified
+                            ? "user-status active"
+                            : "user-status warning"
+                        }
+                      >
+                        {user.emailVerified ? "Email vérifié" : "Non vérifié"}
+                      </span>
+                    </div>
                   </td>
 
                   <td>
-
                     <div className="user-actions">
-
                       <button type="button" onClick={() => openHistory(user)}>
                         Historique
                       </button>
 
                       <button
                         type="button"
-                        onClick={() =>
-                          openEditModal(user)
-                        }
+                        onClick={() => openEditModal(user)}
                       >
                         Modifier
                       </button>
+
+                      {!user.emailVerified && (
+                        <button
+                          type="button"
+                          onClick={() => handleResendVerification(user)}
+                          disabled={resendingUserId === user.id}
+                          title="Renvoyer le code de vérification"
+                        >
+                          {resendingUserId === user.id ? "Envoi…" : "Renvoyer code"}
+                        </button>
+                      )}
 
                       <button
                         type="button"
@@ -466,9 +510,7 @@ export default function AdminUsers() {
                       >
                         {deletingUserId === user.id ? "Suppression…" : "Supprimer"}
                       </button>
-
                     </div>
-
                   </td>
 
                 </tr>

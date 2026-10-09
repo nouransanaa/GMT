@@ -41,10 +41,13 @@ export const adminApiService = {
   updateUser: (id, data) =>
   adminApi.put(`/admin/users/${id}`, data),
   deleteUser: (id) => adminApi.delete(`/admin/users/${id}`),
+  resendUserVerification: (userId) => adminApi.post(`/admin/users/${userId}/resend-verification`),
   userRentals: (userId) => adminApi.get(`/admin/users/${userId}/rentals`, { preservePageOnUnauthorized: true }),
   createUserRental: (userId, data) => adminApi.post(`/admin/users/${userId}/rentals`, data, { preservePageOnUnauthorized: true }),
   settings: () => adminApi.get("/admin/settings"),
   saveSetting: (data) => adminApi.post("/admin/settings", data),
 };
+
+export { verificationApi } from "../api";
 
 export default adminApi;

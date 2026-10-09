@@ -42,4 +42,9 @@ public class AdminUserController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
+    @PostMapping("/{id}/resend-verification")
+    public void resendVerification(@PathVariable Long id) {
+        service.resendVerification(id);
+    }
 }

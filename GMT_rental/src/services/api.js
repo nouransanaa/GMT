@@ -25,6 +25,12 @@ export const quoteRequestApi = {
   create: (data) => publicApi.post("/public/demandes", data),
 };
 
+export const verificationApi = {
+  send: (email) => publicApi.post("/auth/verification/send", { email }),
+  verify: (email, code) => publicApi.post("/auth/verification/verify", { email, code }),
+  resend: (email) => publicApi.post("/auth/verification/resend", { email }),
+};
+
 // Keep the existing default export for the account context's legacy register call.
 const API = axios.create({ baseURL: API_BASE_URL });
 API.interceptors.request.use((config) => {

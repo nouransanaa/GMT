@@ -130,6 +130,12 @@ body.light-mode .admin-shell .admin-content .admin-muted{color:var(--adm-muted)!
   color: #ffc2c2;
 }
 
+.user-status.warning,
+.user-status.pending {
+  background: #3b2e16;
+  color: #f6d98b;
+}
+
 .user-actions {
   display: flex;
   align-items: center;

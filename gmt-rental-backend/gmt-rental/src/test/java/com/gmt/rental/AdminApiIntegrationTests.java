@@ -65,6 +65,7 @@ class AdminApiIntegrationTests {
         admin.setEmail(adminEmail);
         admin.setRole("ADMIN");
         admin.setActif(true);
+        admin.setEmailVerified(true);
         admin.setMotDePasse(passwordEncoder.encode("admin-test-password"));
         userRepository.save(admin);
 
@@ -209,15 +210,29 @@ class AdminApiIntegrationTests {
 
         LocalDate start = LocalDate.now().plusDays(2);
         LocalDate end = start.plusDays(5);
+        String quoteEmail = "sami-" + UUID.randomUUID() + "@email.com";
         String quoteBody = """
-                {"nom":"Ben Ali","prenom":"Sami","email":"sami-%s@email.com","telephone":"+216 22 333 444","vehiculeId":%d,"dateDebut":"%s","dateFin":"%s","lieuPriseEnCharge":"Aéroport Tunis-Carthage","lieuRestitution":"Agence GMT Sousse","message":"Test contrat public"}
-                """.formatted(UUID.randomUUID(), vehicle.getId(), start, end);
+                {"nom":"Ben Ali","prenom":"Sami","email":"%s","telephone":"+216 22 333 444","vehiculeId":%d,"dateDebut":"%s","dateFin":"%s","lieuPriseEnCharge":"Aéroport Tunis-Carthage","lieuRestitution":"Agence GMT Sousse","message":"Test contrat public"}
+                """.formatted(quoteEmail, vehicle.getId(), start, end);
         mockMvc.perform(post("/api/public/demandes").contentType(MediaType.APPLICATION_JSON).content(quoteBody))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.user").doesNotExist())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("1000")));
+        var savedQuote = quoteRequestRepository.findAll().getFirst();
+        User quoteUser = userRepository.findByEmailIgnoreCase(quoteEmail).orElseThrow();
         if (quoteRequestRepository.findAll().size() != 1
-                || !"NOUVELLE".equals(quoteRequestRepository.findAll().getFirst().getStatut())) {
+                || !"NOUVELLE".equals(savedQuote.getStatut())
+                || savedQuote.getUser() == null
+                || !savedQuote.getUser().getId().equals(quoteUser.getId())
+                || !"USER".equals(quoteUser.getRole())
+                || !quoteUser.getEmail().equals(quoteEmail)) {
             throw new AssertionError("La demande publique doit être persistée avec le statut NOUVELLE");
+        }
+
+        mockMvc.perform(post("/api/public/demandes").contentType(MediaType.APPLICATION_JSON).content(quoteBody))
+                .andExpect(status().isCreated());
+        if (userRepository.findAll().stream().filter(user -> user.getEmail().equalsIgnoreCase(quoteEmail)).count() != 1) {
+            throw new AssertionError("Une nouvelle demande du même email doit réutiliser le compte existant");
         }
 
         String missingVehicleBody = quoteBody.replace("\"vehiculeId\":" + vehicle.getId(), "\"vehiculeId\":999999");
@@ -230,6 +245,7 @@ class AdminApiIntegrationTests {
         admin.setEmail(adminEmail);
         admin.setRole("ADMIN");
         admin.setActif(true);
+        admin.setEmailVerified(true);
         admin.setMotDePasse(passwordEncoder.encode("test-password"));
         userRepository.save(admin);
 
@@ -242,6 +258,10 @@ class AdminApiIntegrationTests {
         if (!matcher.find()) throw new AssertionError("La réponse de connexion ne contient pas de jeton JWT");
 
         String token = matcher.group(1);
+        mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(quoteEmail)));
+
         for (String name : List.of("Test A", "Test B", "Test C")) {
             mockMvc.perform(post("/api/admin/categories")
                             .header("Authorization", "Bearer " + token)
@@ -296,6 +316,7 @@ class AdminApiIntegrationTests {
         admin.setEmail(adminEmail);
         admin.setRole("ADMIN");
         admin.setActif(true);
+        admin.setEmailVerified(true);
         admin.setMotDePasse(passwordEncoder.encode("rental-test-password"));
         userRepository.save(admin);
 

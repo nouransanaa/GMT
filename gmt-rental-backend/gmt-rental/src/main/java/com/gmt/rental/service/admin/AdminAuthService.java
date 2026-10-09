@@ -29,9 +29,14 @@ public class AdminAuthService {
         User user = users.findByEmail(request.email().trim()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants invalides"));
         String role = user.getRole() == null ? "" : user.getRole().toUpperCase();
         boolean admin = role.equals("ADMIN") || role.equals("ROLE_ADMIN");
-        if (!admin || Boolean.FALSE.equals(user.getActif()) || user.getMotDePasse() == null
-                || !passwordEncoder.matches(request.motDePasse(), user.getMotDePasse())) {
+        if (!admin || user.getMotDePasse() == null || !passwordEncoder.matches(request.motDePasse(), user.getMotDePasse())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants invalides");
+        }
+        if (Boolean.FALSE.equals(user.getEmailVerified())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Veuillez vérifier votre adresse email avant de vous connecter.");
+        }
+        if (Boolean.FALSE.equals(user.getActif())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce compte est désactivé.");
         }
         return new LoginResponse(jwtUtils.generateToken(user.getEmail()), "Bearer", user.getId(), user.getEmail(), user.getNom(), user.getPrenom(), "ROLE_ADMIN");
     }

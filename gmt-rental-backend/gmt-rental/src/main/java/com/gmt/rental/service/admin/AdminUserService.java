@@ -23,10 +23,17 @@ public class AdminUserService {
 
     private final UserRepository users;
     private final PasswordEncoder passwordEncoder;
+    private final com.gmt.rental.service.VerificationService verificationService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AdminUserService.class);
 
-    public AdminUserService(UserRepository users, PasswordEncoder passwordEncoder) {
+    public AdminUserService(
+            UserRepository users,
+            PasswordEncoder passwordEncoder,
+            com.gmt.rental.service.VerificationService verificationService
+    ) {
         this.users = users;
         this.passwordEncoder = passwordEncoder;
+        this.verificationService = verificationService;
     }
 
     public List<UserSummary> findAll() {
@@ -44,8 +51,16 @@ public class AdminUserService {
         user.setRole(data.getRole());
         user.setMotDePasse(passwordEncoder.encode(data.getMotDePasse()));
         user.setActif(data.getActif() == null || data.getActif());
+        user.setEmailVerified(false);
 
-        return toSummary(save(user));
+        User savedUser = save(user);
+        try {
+            verificationService.sendEmailVerificationCode(savedUser.getEmail());
+        } catch (Exception e) {
+            log.warn("Échec d'envoi de l'e-mail de vérification lors de la création de l'utilisateur {} : {}", savedUser.getEmail(), e.getMessage());
+        }
+
+        return toSummary(savedUser);
     }
 
     public UserSummary update(Long id, User data) {
@@ -57,6 +72,7 @@ public class AdminUserService {
         copyProfile(data, user);
 
         if (data.getActif() != null) user.setActif(data.getActif());
+        if (data.getEmailVerified() != null) user.setEmailVerified(data.getEmailVerified());
         if (data.getMotDePasse() != null && !data.getMotDePasse().isBlank()) {
             user.setMotDePasse(passwordEncoder.encode(data.getMotDePasse()));
         }
@@ -135,6 +151,9 @@ public class AdminUserService {
         target.setNom(source.getNom());
         target.setPrenom(source.getPrenom());
         target.setEmail(source.getEmail());
+        if (source.getTelephone() != null) {
+            target.setTelephone(source.getTelephone());
+        }
     }
 
     private User save(User user) {
@@ -145,14 +164,25 @@ public class AdminUserService {
         }
     }
 
+    public void resendVerification(Long id) {
+        User user = users.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur introuvable : " + id));
+        if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cette adresse e-mail est déjà vérifiée.");
+        }
+        verificationService.resendEmailVerificationCode(user.getEmail());
+    }
+
     private UserSummary toSummary(User user) {
         return new UserSummary(
                 user.getId(),
                 user.getNom(),
                 user.getPrenom(),
                 user.getEmail(),
+                user.getTelephone(),
                 user.getRole(),
-                user.getActif()
+                user.getActif(),
+                Boolean.TRUE.equals(user.getEmailVerified())
         );
     }
 }

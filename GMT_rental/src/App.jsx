@@ -23,6 +23,7 @@ import AdminCategories from "./pages/admin/Categories";
 import AdminQuoteRequests from "./pages/admin/QuoteRequests";
 import AdminUsers from "./pages/admin/Users";
 import AdminSettings from "./pages/admin/Settings";
+import VerifyEmail from "./pages/admin/VerifyEmail";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -56,6 +57,8 @@ function AppRoutes({ theme, setTheme }) {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/devis" element={<QuoteRequest />} />
         <Route path="/devis/confirmation" element={<QuoteConfirmation />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/admin/verify-email" element={<VerifyEmail />} />
 
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>

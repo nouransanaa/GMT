@@ -1,5 +1,6 @@
 package com.gmt.rental.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnTransformer;
 import java.math.BigDecimal;
@@ -21,6 +22,11 @@ public class QuoteRequest {
     private String email;
 
     private String telephone;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id")
@@ -100,6 +106,14 @@ public class QuoteRequest {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Vehicle getVehicule() {

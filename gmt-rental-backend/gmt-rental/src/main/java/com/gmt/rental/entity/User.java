@@ -24,6 +24,11 @@ public class User {
 
     private Boolean actif = true;
 
+    @Column(name = "email_verified")
+    private Boolean emailVerified = false;
+
+    private String telephone;
+
     public User() {
     }
 
@@ -81,5 +86,21 @@ public class User {
 
     public void setActif(Boolean actif) {
         this.actif = actif;
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }

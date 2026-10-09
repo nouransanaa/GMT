@@ -20,7 +20,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getMotDePasse() == null ? "" : user.getMotDePasse())
                 .authorities(authority)
-                .disabled(Boolean.FALSE.equals(user.getActif()))
+                .disabled(Boolean.FALSE.equals(user.getActif()) || Boolean.FALSE.equals(user.getEmailVerified()))
                 .build();
     }
 }

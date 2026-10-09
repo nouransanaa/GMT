@@ -29,12 +29,22 @@ public class AdminBootstrapInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (email.isBlank() || password.isBlank() || users.findByEmail(email.trim()).isPresent()) return;
+        if (email.isBlank() || password.isBlank()) return;
+        var existing = users.findByEmail(email.trim());
+        if (existing.isPresent()) {
+            User currentAdmin = existing.get();
+            if (Boolean.FALSE.equals(currentAdmin.getEmailVerified()) || currentAdmin.getEmailVerified() == null) {
+                currentAdmin.setEmailVerified(true);
+                users.save(currentAdmin);
+            }
+            return;
+        }
         User admin = new User();
         admin.setEmail(email.trim());
         admin.setNom("Administrateur");
         admin.setRole("ADMIN");
         admin.setActif(true);
+        admin.setEmailVerified(true);
         admin.setMotDePasse(passwordEncoder.encode(password));
         users.save(admin);
     }
