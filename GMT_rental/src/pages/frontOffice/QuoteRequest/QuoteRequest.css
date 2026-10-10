@@ -50,6 +50,7 @@
 .quote-back { padding-inline: 22px; background: transparent; color: #aebbd0; }
 .quote-back:hover { color: white; }
 .quote-error, .vehicle-error { padding: 14px 16px; border: 1px solid #ef444466; border-radius: 14px; background: #ef44441a; color: #fca5a5; }
+.quote-conflict-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .quote-step-dots { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
 .quote-step-dots span { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: #ffbf00; color: #172033; font-weight: 700; }
 .quote-step-dots span.complete { background: #3981f6; color: white; }

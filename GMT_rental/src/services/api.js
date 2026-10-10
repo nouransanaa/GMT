@@ -23,6 +23,7 @@ export const categoryApi = {
 
 export const quoteRequestApi = {
   create: (data) => publicApi.post("/public/demandes", data),
+  checkAvailability: (params) => publicApi.get("/public/demandes/disponibilite", { params }),
 };
 
 export const verificationApi = {

@@ -52,6 +52,7 @@ function QuoteRequest() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [conflictingPeriods, setConflictingPeriods] = useState([]);
   const submitted = useRef(false);
   const sending = useRef(false);
 
@@ -192,6 +193,11 @@ function QuoteRequest() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    if (["dateDebut", "dateFin", "vehiculeId"].includes(name)) {
+      setError("");
+      setConflictingPeriods([]);
+    }
+
     setFormData((previous) => ({
       ...previous,
       [name]: value,
@@ -237,6 +243,7 @@ function QuoteRequest() {
 
   const handlePrevious = () => {
     setError("");
+    setConflictingPeriods([]);
     setStep((previous) => previous - 1);
   };
 
@@ -245,6 +252,8 @@ function QuoteRequest() {
   // =========================
 
   const handleChangeVehicle = () => {
+    setError("");
+    setConflictingPeriods([]);
     setFormData((previous) => ({
       ...previous,
       vehiculeId: "",
@@ -270,8 +279,21 @@ function QuoteRequest() {
     sending.current = true;
     setLoading(true);
     setError("");
+    setConflictingPeriods([]);
 
     try {
+      const { data: availability } = await quoteRequestApi.checkAvailability({
+        vehiculeId: Number(formData.vehiculeId),
+        dateDebut: formData.dateDebut,
+        dateFin: formData.dateFin,
+      });
+
+      if (!availability.available) {
+        setConflictingPeriods(availability.conflictingPeriods || []);
+        setError(availability.message || "The selected car is unavailable for these dates.");
+        return;
+      }
+
       const data = {
         nom: formData.nom,
         prenom: formData.prenom,
@@ -314,10 +336,16 @@ function QuoteRequest() {
     } catch (err) {
       console.error(err);
       const responseData = err.response?.data;
+      if (err.response?.status === 409 && responseData?.conflictingPeriods) {
+        setConflictingPeriods(responseData.conflictingPeriods);
+      }
       const backendMessage = typeof responseData === "string" ? responseData : responseData?.message || responseData?.detail || responseData?.title;
-      setError(backendMessage || (err.code === "ERR_NETWORK"
-        ? "Impossible de joindre le backend GMT. Vérifiez qu'il est démarré sur le port 8081."
-        : err.message || "Une erreur est survenue lors de l'envoi de votre demande."));
+      const status = err.response?.status;
+      setError(backendMessage || (status === 401
+        ? "Le backend refuse cette demande publique (401). Redémarrez le backend GMT avec la dernière version puis réessayez."
+        : err.code === "ERR_NETWORK"
+          ? "Impossible de joindre le backend GMT. Vérifiez qu'il est démarré sur le port 8081."
+          : err.message || "Une erreur est survenue lors de l'envoi de votre demande."));
     } finally {
       if (!submitted.current) sending.current = false;
       setLoading(false);
@@ -724,9 +752,23 @@ function QuoteRequest() {
               </div>
 
               {error && (
-                <div className="quote-error">
-                  {error}
-                </div>
+                <>
+                  <div className="quote-error" role="alert">{error}</div>
+                  {conflictingPeriods.length > 0 && (
+                    <div className="quote-conflict-actions">
+                      <button type="button" className="quote-back" onClick={() => {
+                        setError("");
+                        setConflictingPeriods([]);
+                        setStep(0);
+                      }}>
+                        Modifier les dates
+                      </button>
+                      <button type="button" className="quote-back" onClick={handleChangeVehicle}>
+                        Choisir un autre véhicule
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
 
               <div className="quote-actions">

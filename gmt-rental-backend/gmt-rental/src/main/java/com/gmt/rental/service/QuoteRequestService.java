@@ -27,17 +27,20 @@ public class QuoteRequestService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VehicleAvailabilityService vehicleAvailabilityService;
 
     public QuoteRequestService(
             QuoteRequestRepository quoteRequestRepository,
             VehicleRepository vehicleRepository,
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            VehicleAvailabilityService vehicleAvailabilityService) {
 
         this.quoteRequestRepository = quoteRequestRepository;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.vehicleAvailabilityService = vehicleAvailabilityService;
     }
 
     @Transactional
@@ -64,7 +67,7 @@ public class QuoteRequestService {
 
         // Chercher le véhicule
         Vehicle vehicle = vehicleRepository
-                .findById(dto.getVehiculeId())
+                .findByIdForUpdate(dto.getVehiculeId())
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Le véhicule sélectionné n'existe plus. Veuillez en choisir un autre."));
 
@@ -79,6 +82,9 @@ public class QuoteRequestService {
                     "La date de fin doit être après la date de début"
             );
         }
+
+        vehicleAvailabilityService.ensureAvailable(
+                vehicle, dto.getDateDebut(), dto.getDateFin());
 
         // Le tarif peut être absent pour une demande de devis : le prix sera
         // déterminé par l'équipe, et le total restera null jusque-là.

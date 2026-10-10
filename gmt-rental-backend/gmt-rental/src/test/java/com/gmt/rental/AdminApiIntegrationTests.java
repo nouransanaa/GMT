@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -229,7 +230,74 @@ class AdminApiIntegrationTests {
             throw new AssertionError("La demande publique doit être persistée avec le statut NOUVELLE");
         }
 
+        DateTimeFormatter displayDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        mockMvc.perform(get("/api/public/demandes/disponibilite")
+                        .param("vehiculeId", vehicle.getId().toString())
+                        .param("dateDebut", start.toString())
+                        .param("dateFin", end.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(false))
+                .andExpect(jsonPath("$.conflictingPeriods[0].dateDebut").value(start.toString()))
+                .andExpect(jsonPath("$.conflictingPeriods[0].dateFin").value(end.toString()))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString(
+                        start.format(displayDate) + " to " + end.format(displayDate))));
+
         mockMvc.perform(post("/api/public/demandes").contentType(MediaType.APPLICATION_JSON).content(quoteBody))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.conflictingPeriods[0].dateDebut").value(start.toString()))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString(
+                        start.format(displayDate) + " to " + end.format(displayDate))));
+
+        savedQuote.setStatut("ANNULEE");
+        quoteRequestRepository.save(savedQuote);
+        mockMvc.perform(get("/api/public/demandes/disponibilite")
+                        .param("vehiculeId", vehicle.getId().toString())
+                        .param("dateDebut", start.toString())
+                        .param("dateFin", end.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(true));
+        savedQuote.setStatut("NOUVELLE");
+        quoteRequestRepository.save(savedQuote);
+
+        RentalHistory rental = new RentalHistory();
+        rental.setUser(quoteUser);
+        rental.setVehicle("GMT Test");
+        rental.setVehicleEntity(vehicle);
+        rental.setDateDebut(end.plusDays(2));
+        rental.setDateFin(end.plusDays(4));
+        rental.setPrixPaye(new BigDecimal("400"));
+        rental.setDevise("DT");
+        rentalHistoryRepository.save(rental);
+
+        mockMvc.perform(get("/api/public/demandes/disponibilite")
+                        .param("vehiculeId", vehicle.getId().toString())
+                        .param("dateDebut", start.plusDays(1).toString())
+                        .param("dateFin", end.plusDays(3).toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.conflictingPeriods.length()").value(2))
+                .andExpect(jsonPath("$.conflictingPeriods[1].dateDebut").value(end.plusDays(2).toString()))
+                .andExpect(jsonPath("$.conflictingPeriods[1].dateFin").value(end.plusDays(4).toString()));
+
+        RentalHistory legacyRental = new RentalHistory();
+        legacyRental.setUser(quoteUser);
+        legacyRental.setVehicle("GMT Test");
+        legacyRental.setDateDebut(end.plusDays(5));
+        legacyRental.setDateFin(end.plusDays(6));
+        legacyRental.setPrixPaye(new BigDecimal("200"));
+        legacyRental.setDevise("DT");
+        rentalHistoryRepository.save(legacyRental);
+        mockMvc.perform(get("/api/public/demandes/disponibilite")
+                        .param("vehiculeId", vehicle.getId().toString())
+                        .param("dateDebut", end.plusDays(5).toString())
+                        .param("dateFin", end.plusDays(6).toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(false))
+                .andExpect(jsonPath("$.conflictingPeriods[0].dateDebut").value(end.plusDays(5).toString()));
+
+        String adjacentQuoteBody = quoteBody
+                .replace("\"dateDebut\":\"" + start + "\"", "\"dateDebut\":\"" + end + "\"")
+                .replace("\"dateFin\":\"" + end + "\"", "\"dateFin\":\"" + end.plusDays(2) + "\"");
+        mockMvc.perform(post("/api/public/demandes").contentType(MediaType.APPLICATION_JSON).content(adjacentQuoteBody))
                 .andExpect(status().isCreated());
         if (userRepository.findAll().stream().filter(user -> user.getEmail().equalsIgnoreCase(quoteEmail)).count() != 1) {
             throw new AssertionError("Une nouvelle demande du même email doit réutiliser le compte existant");
