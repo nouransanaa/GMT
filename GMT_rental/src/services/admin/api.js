@@ -33,6 +33,10 @@ export const adminApiService = {
   quoteRequests: (params) => adminApi.get("/admin/demandes", { params }),
   quoteRequest: (id) => adminApi.get(`/admin/demandes/${id}`),
   updateQuoteRequestStatus: (id, statut) => adminApi.patch(`/admin/demandes/${id}/statut`, null, { params: { statut } }),
+  notifications: () => adminApi.get("/admin/notifications"),
+  unreadNotificationCount: () => adminApi.get("/admin/notifications/unread-count"),
+  markNotificationAsRead: (id) => adminApi.patch(`/admin/notifications/${id}/read`),
+  markAllNotificationsAsRead: () => adminApi.patch("/admin/notifications/read-all"),
   users: () => adminApi.get("/admin/users"),
 
   createUser: (data) =>

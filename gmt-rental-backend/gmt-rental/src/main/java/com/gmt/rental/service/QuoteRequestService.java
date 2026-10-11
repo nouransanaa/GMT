@@ -2,8 +2,10 @@ package com.gmt.rental.service;
 
 import com.gmt.rental.dto.QuoteRequestDTO;
 import com.gmt.rental.entity.QuoteRequest;
+import com.gmt.rental.entity.Notification;
 import com.gmt.rental.entity.User;
 import com.gmt.rental.entity.Vehicle;
+import com.gmt.rental.repository.NotificationRepository;
 import com.gmt.rental.repository.QuoteRequestRepository;
 import com.gmt.rental.repository.UserRepository;
 import com.gmt.rental.repository.VehicleRepository;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class QuoteRequestService {
 
     private final QuoteRequestRepository quoteRequestRepository;
+    private final NotificationRepository notificationRepository;
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -31,12 +34,14 @@ public class QuoteRequestService {
 
     public QuoteRequestService(
             QuoteRequestRepository quoteRequestRepository,
+            NotificationRepository notificationRepository,
             VehicleRepository vehicleRepository,
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             VehicleAvailabilityService vehicleAvailabilityService) {
 
         this.quoteRequestRepository = quoteRequestRepository;
+        this.notificationRepository = notificationRepository;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -119,7 +124,16 @@ public class QuoteRequestService {
         quoteRequest.setPrixTotal(prixTotal);
 
         // Sauvegarder dans PostgreSQL
-        return quoteRequestRepository.save(quoteRequest);
+        QuoteRequest savedQuote = quoteRequestRepository.save(quoteRequest);
+
+        Notification notification = new Notification();
+        notification.setType("NOUVEAU_DEVIS");
+        notification.setMessage("Nouveau devis reçu ! Un client vient d'envoyer une demande de location.");
+        notification.setDevis(savedQuote);
+        notification.setLu(false);
+        notificationRepository.save(notification);
+
+        return savedQuote;
     }
 
     private User findOrCreateUser(QuoteRequestDTO dto) {

@@ -1,6 +1,7 @@
 import { CarFront, ChartNoAxesCombined, FileText, FolderKanban, LogOut, Settings, Users } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import NotificationBell from "./NotificationBell";
 import "./AdminLayout.css";
 
 const links = [
@@ -31,7 +32,7 @@ export default function AdminLayout() {
         <button type="button" className="admin-logout" onClick={signOut}><LogOut size={17} /> Déconnexion</button>
       </aside>
       <div className="admin-main">
-        <header className="admin-topbar"><span>Administration</span><div className="admin-user"><span className="admin-avatar">{(user?.prenom || user?.email || "A").slice(0, 1).toUpperCase()}</span><span>{user?.prenom || user?.email || "Administrateur"}</span></div></header>
+        <header className="admin-topbar"><span>Administration</span><div className="admin-topbar-actions"><NotificationBell /><div className="admin-user"><span className="admin-avatar">{(user?.prenom || user?.email || "A").slice(0, 1).toUpperCase()}</span><span>{user?.prenom || user?.email || "Administrateur"}</span></div></div></header>
         <main className="admin-content"><Outlet /></main>
       </div>
     </div>

@@ -8,6 +8,7 @@ import com.gmt.rental.repository.CategoryRepository;
 import com.gmt.rental.repository.UserRepository;
 import com.gmt.rental.repository.VehicleRepository;
 import com.gmt.rental.repository.QuoteRequestRepository;
+import com.gmt.rental.repository.NotificationRepository;
 import com.gmt.rental.repository.RentalHistoryRepository;
 import com.gmt.rental.service.admin.AdminCategoryService;
 import org.junit.jupiter.api.Test;
@@ -28,10 +29,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +56,7 @@ class AdminApiIntegrationTests {
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private VehicleRepository vehicleRepository;
     @Autowired private QuoteRequestRepository quoteRequestRepository;
+    @Autowired private NotificationRepository notificationRepository;
     @Autowired private RentalHistoryRepository rentalHistoryRepository;
     @Autowired private AdminCategoryService adminCategoryService;
     @Autowired private PasswordEncoder passwordEncoder;
@@ -189,6 +193,12 @@ class AdminApiIntegrationTests {
     @Transactional
     void adminRoutesRequireJwtAndPublicQuoteContractStillWorks() throws Exception {
         mockMvc.perform(get("/api/admin/vehicules")).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/admin/notifications")).andExpect(status().isUnauthorized());
+        mockMvc.perform(options("/api/parametres")
+                        .header("Origin", "http://127.0.0.1:5174")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:5174"));
         mockMvc.perform(get("/api/categories")).andExpect(status().isOk());
         mockMvc.perform(get("/api/parametres")).andExpect(status().isOk());
 
@@ -329,6 +339,31 @@ class AdminApiIntegrationTests {
         mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString(quoteEmail)));
+
+        mockMvc.perform(get("/api/admin/notifications").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].lu").value(false))
+                .andExpect(jsonPath("$[0].devisId").isNumber())
+                .andExpect(jsonPath("$[0].vehicule").value("GMT Test"));
+        mockMvc.perform(get("/api/admin/notifications/unread-count").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value(2));
+
+        Long notificationId = notificationRepository.findAll().getFirst().getId();
+        mockMvc.perform(patch("/api/admin/notifications/{id}/read", notificationId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lu").value(true));
+        mockMvc.perform(get("/api/admin/notifications/unread-count").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value(1));
+        mockMvc.perform(patch("/api/admin/notifications/read-all").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.updated").value(1));
+        mockMvc.perform(get("/api/admin/notifications/unread-count").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value(0));
 
         for (String name : List.of("Test A", "Test B", "Test C")) {
             mockMvc.perform(post("/api/admin/categories")
